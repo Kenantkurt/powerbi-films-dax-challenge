@@ -1,5 +1,12 @@
 # 🎬 Power BI – Films DAX Challenge
 
+## Dashboard Preview
+![Dashboard](screenshots/dashboard.png)
+
+## Data Model
+![Data Model](screenshots/model_view-powerbi.png)
+
+
 ![Power BI](https://img.shields.io/badge/Tool-Power%20BI-yellow)
 ![DAX](https://img.shields.io/badge/Language-DAX-blue)
 ![Analytics](https://img.shields.io/badge/Domain-Business%20Intelligence-success)
