@@ -6,31 +6,29 @@
 ## Data Model
 ![Data Model](screenshots/model_view-powerbi.png)
 
-
 ![Power BI](https://img.shields.io/badge/Tool-Power%20BI-yellow)
 ![DAX](https://img.shields.io/badge/Language-DAX-blue)
 ![Analytics](https://img.shields.io/badge/Domain-Business%20Intelligence-success)
 ![Status](https://img.shields.io/badge/Project-Completed-brightgreen)
 
-This project is a Power BI dashboard built to analyze movie profitability using DAX measures
-and a clean relational data model.
+This project is a Power BI analytical solution designed to evaluate movie profitability
+with a strong emphasis on data modeling correctness, metric reliability,
+and business logic accuracy.
 
-The objective of this project is to understand how filter context, data quality,
-and aggregation logic impact business metrics, with a particular focus on the difference
-between weighted and unweighted profit margin calculations.
+Rather than focusing solely on visualization, the project prioritizes how
+data structure, aggregation logic, and filter context directly impact analytical outcomes.
 
 ---
 
 ## 📊 Project Overview
 
-The main goals of this project are:
+The core objectives of this project were to:
 
-- Build a proper fact and dimension data model in Power BI
-- Practice writing explicit DAX measures instead of relying on implicit aggregations
-- Calculate profitability using clear business logic
-- Compare revenue-weighted profitability with per-movie average profitability
-- Handle missing data correctly at the data preparation stage
-- Design an interactive dashboard with controlled slicer interactions
+- Design a robust fact–dimension data model suitable for analytical workloads
+- Implement explicit, reusable DAX measures aligned with business logic
+- Distinguish between revenue-weighted and unweighted profitability metrics
+- Handle data quality issues upstream to avoid distorted KPIs
+- Build a dashboard where filter behavior is predictable and controlled
 
 ---
 
@@ -51,12 +49,15 @@ The main goals of this project are:
 - Certificate → Films (one-to-many)
 - Single-direction filtering (best practice)
 
-This data model ensures correct filter propagation from dimension tables to the fact table
-and prevents misleading aggregations in DAX calculations.
+This star schema ensures:
+
+- Clear separation of facts and dimensions
+- Correct filter propagation
+- Stable and interpretable DAX calculations
 
 ---
 
-## 🧠 Key DAX Measures
+## 🧠 Key DAX Measures & Logic
 
 ### Weighted Profit Margin (%)
 
@@ -68,16 +69,17 @@ VAR margin =
 RETURN
 DIVIDE ( margin, revenue )
 
-Explanation:
-This measure calculates the overall profitability of a selected group of movies by comparing
-total box office revenue with total budget.
+Engineering perspective:
 
-Movies with higher box office revenue have a larger impact on the final result,
-which makes this a revenue-weighted profitability metric.
+This measure computes profitability at the aggregate level, where each movie’s contribution
+is weighted by its revenue.
 
-This measure answers the following question:
+High-revenue movies therefore have a proportionally larger impact on the final metric,
+making this calculation suitable for evaluating overall financial performance.
 
-“How profitable is this group overall, taking revenue size into account?”
+Business question answered:
+
+“How profitable is this group overall, considering revenue scale?”
 
 ---
 
@@ -89,41 +91,43 @@ AVERAGEX (
     [Margin %]
 )
 
-Explanation:
-This measure calculates the profit margin for each movie individually and then computes
-the average of those margins.
+Engineering perspective:
 
-Each movie contributes equally to the final value, regardless of its box office size.
-As a result, this measure represents an unweighted average profitability metric.
+This measure evaluates profitability at the row level (per movie) and then averages the results,
+ensuring that each movie contributes equally regardless of size.
 
-This measure answers the following question:
+The use of AVERAGEX is critical to avoid misleading results that would arise
+from aggregating totals before averaging.
 
-“On average, how profitable is a single movie in this group?”
+Business question answered:
+
+“On average, how profitable is an individual movie in this group?”
 
 ---
 
 ## ⚠️ Handling Missing Data
 
-During the analysis, some movies were found to have missing Budget or Box Office values.
+During data exploration, some movies were identified with missing Budget or Box Office values.
 
-Instead of masking the issue using conditional logic inside DAX measures:
+Instead of compensating for this inside DAX logic:
 
-Rows with missing Budget or Box Office values were removed in Power Query
+- Incomplete rows were removed at the Power Query (ETL) stage
 
 This approach ensures:
-- Profitability metrics remain meaningful
-- DAX logic stays clean and interpretable
-- No misleading results caused by incomplete or invalid data
+
+- Metrics are computed only on valid records
+- DAX logic remains simple and transparent
+- Analytical results are not skewed by incomplete data
 
 ---
 
 ## 📈 Dashboard Overview
 
-The final Power BI dashboard includes the following visuals:
+The final dashboard is designed with explicit interaction control:
 
 Genre Slicer:
 - Filters the certificate slicer and the main table
-- Does not affect the bar chart (controlled interaction)
+- Does not affect the genre-level bar chart
 
 Certificate Slicer:
 - Filters all visuals on the page
@@ -134,21 +138,21 @@ Main Table (Per Movie):
 - Profit Margin (%)
 
 Bar Chart:
-- Profit margin summarized by Genre
+- Unweighted average profit margin summarized by Genre
 
-Filter interactions were explicitly configured according to the challenge requirements
-to control how slicers affect each visual.
+Filter interactions were deliberately configured to ensure analytical consistency
+and avoid accidental cross-filtering.
 
 ---
 
 ## 📈 Key Learnings
 
-- Difference between implicit and explicit measures in Power BI
-- Proper use of VAR for readable and maintainable DAX formulas
-- Why AVERAGEX is required for unweighted average calculations
-- Difference between weighted and unweighted profitability metrics
-- Importance of data quality in analytical projects
-- Understanding filter context and relationship-driven calculations
+- Analytical accuracy depends heavily on data model design
+- Implicit aggregations can hide critical assumptions
+- VAR improves both performance and readability in complex DAX
+- AVERAGEX is essential for correct row-level averaging
+- Data quality should be enforced before metric calculation
+- Understanding filter context is fundamental to reliable BI solutions
 
 ---
 
@@ -169,4 +173,5 @@ Dashboard and data model screenshots are available in the screenshots folder.
 ## 🏷 Topics / Hashtags
 
 Power BI · DAX · Business Intelligence · Data Analytics · Data Modeling ·
-Profitability Analysis · Dashboard Design · Portfolio Project
+Profitability Analysis · Analytics Engineering · Portfolio Project
+
